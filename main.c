@@ -15,7 +15,30 @@ int main(void) {
     printf("Select Number of Players: ");
     scanf("%d", &numPlayers);
 
-    create_board(dimension, board);
+    switch(numPlayers) {
+        case 1:
+
+            // allocates memory globally for the board 
+            board = malloc(dimension * sizeof(char *));
+            for (int i = 0; i < dimension; i++) {
+                board[i] = malloc(dimension * sizeof(char));
+            }
+
+            create_board(dimension, board);
+            break;
+
+        case 2:
+        
+            // allocates memory globally for the board 
+            board = malloc(dimension * sizeof(char *));
+            for (int i = 0; i < dimension; i++) {
+                board[i] = malloc(dimension * sizeof(char));
+            }
+
+            create_board(dimension, board);
+            break;
+    }
+
     //free_board(dimension, board);
     
     // deallocates memory of board
@@ -23,5 +46,6 @@ int main(void) {
         free(board[i]);
     }
     free(board);
+
     return 0;
 }

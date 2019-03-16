@@ -5,12 +5,6 @@ void create_board(int dimension, char** board) {
     // initializes the seed for random number generator
     srand(time(0));
 
-    // allocates memory globally for the board 
-    board = malloc(dimension * sizeof(char *));
-    for (int i = 0; i < dimension; i++) {
-        board[i] = malloc(dimension * sizeof(char));
-    }
-
     // the following builds the board based on the frequency of letters in the English language
     // the frequency was multiplied by 100 to retain accuracy 
     // the table used can be found at http://pi.math.cornell.edu/~mec/2003-2004/cryptography/subs/frequencies.html
@@ -52,10 +46,6 @@ void create_board(int dimension, char** board) {
 }
 
 void free_board(int dimension, char **board) {
-    // deallocates memory of board
-    for (int i = 0; i < dimension; i++) {
-        free(board[i]);
-    }
-    free(board);
+    
     return;
 }
