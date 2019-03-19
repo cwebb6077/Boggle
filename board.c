@@ -57,3 +57,4 @@ void free_board(int dimension, char **board) {
     }
     return;
 }
+

@@ -7,3 +7,4 @@ valgrind:
 	
 clean:
 	rm boggle
+
