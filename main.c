@@ -1,7 +1,53 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include "board.h"
+
+struct trieNode {
+    struct trieNode *children[26];
+    bool endOfWord;
+};
+
+struct trieNode *getNode(void) {
+    struct trieNode *newNode = NULL;
+    newNode = (struct trieNode *)malloc(sizeof(struct trieNode));
+
+    if (newNode) {
+        newNode->endOfWord = false;
+
+        for (int i = 0; i < 26; i++) {
+            newNode->children[i] = NULL;
+        }
+    }
+    return newNode;
+}
+
+void insert(struct trieNode *root, char *key){
+    int index;
+
+    struct trieNode *currNode = root;
+
+    for (int i = 0; i < strlen(key); i++) {
+        index = key[i] - 97;
+        if (!currNode->children[index]) currNode->children[index] = getNode();
+        currNode = currNode->children[index]; 
+    }
+    currNode->endOfWord = true;
+}
+
+bool search(struct trieNode *root, char *key) {
+    int index;
+
+    struct trieNode *currNode = root;
+
+    for (int i = 0; i < strlen(key); i++) {
+        index = key[i] - 97;
+        if (!currNode->children[index]) return false;
+        currNode = currNode->children[index];
+    }
+    return (currNode != NULL && currNode->endOfWord);
+}
 
 int main(void) {
 
@@ -12,6 +58,16 @@ int main(void) {
     //int numLoss = 0; // num of Player 2 wins
     char command[10];
     char **board;
+    struct trieNode *root = getNode();
+    char keys[][10] = {"the", "quick", "red", "fox", "jumped", "over", "the" , "lazy", "brown", "dog"};
+    for (int i = 0; i < 10; i++){
+        insert(root, keys[i]);
+    }
+    printf("Enter word to check if they are in trie\n");
+    scanf("%s", command);
+    int temp = search(root, command);
+    if (temp == 0) printf("No\n");
+    else printf("Yes\n");
 
     printf("\n\n\n***** Boggle *****\n\n\n");
     printf("Dimension of board: ");
