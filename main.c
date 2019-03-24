@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include "board.h"
+#include "trie.h"
 
 int main(void) {
 
@@ -10,8 +12,16 @@ int main(void) {
     //int numWins = 0; // num of Player 1 wins
     //int numTies = 0;
     //int numLoss = 0; // num of Player 2 wins
-    char command[10];
+    char command[50];
     char **board;
+    struct trieNode *root = getNode();
+
+    FILE *wordFile = fopen("dict.txt", "r");
+    while(!feof(wordFile)) {
+        fscanf(wordFile, "%s", command);
+        insert(root, command);
+    }
+    fclose(wordFile);
 
     printf("\n\n\n***** Boggle *****\n\n\n");
     printf("Dimension of board: ");
@@ -33,7 +43,7 @@ int main(void) {
             break;
 
         case 2:
-            while(strcmp(command, "!quit")) {
+            while(1) {
 
                 board = malloc(dimension * sizeof(char *));
                 create_board(dimension, board);               
@@ -59,6 +69,8 @@ int main(void) {
             }
             break;
     }
+    deleteTrie(root);
 
     return 0;
 }
+
