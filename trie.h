@@ -14,7 +14,6 @@ struct trieNode {
 struct trieNode *getNode(void);
 void insert(struct trieNode *root, char *key);
 bool search(struct trieNode *root, char *key);
-bool isEmpty(struct trieNode* root);
 void deleteTrie(struct trieNode *currNode);
 
 #endif
