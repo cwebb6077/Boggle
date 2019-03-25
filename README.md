@@ -4,17 +4,25 @@ This repository contains C code to implement Boggle.
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine in order to be able to play the game. See deployment section for notes on how to deploy the project on a live system.
+These instructions will get you a copy of the project up and running on your local machine in order to be able to play the game. See deployment section for notes on how to deploy the project on a live system.  
 
-### Prerequisites
+## Instructions
 
+1. In your terminal, type the command <code>make textfile</code>.
 
-## Deployment
+    - If this obtains an error, you may not have the dictionary in the directory needed.
+        - To find the directory, type <code>sudo find / -name "words" -print</code>.
+        - The directory should be the first one found. You may have to <code>^C</code> to stop the command.
+        - Copy the directory path and type <code>grep -v "^[A-Z]" /path/to/file | grep -v "'" | grep -v "é" | grep -v "Å"  > dict.txt </code>
+        - You now have a working dictionary, and can move along to the next step.
+    - If you do not have the dictionary it will need to be installed, type <code>sudo apt-get install dict</code> to do this.
+        - Type <code>sudo find / -name "words" -print</code>
+        - And then, <code>grep -v "^[A-Z]" /path/to/file | grep -v "'" | grep -v "é" | grep -v "Å"  > dict.txt </code>
+        - You should have now a working dictionary, and can move along to the next step. 
 
+1. Next, type <code>make</code>. This will compile the program.
 
-## General Usage of the Program
-
-
+1. Finally, type <code>./boggle</code> to start the game. 
 
 ## Authors
 
