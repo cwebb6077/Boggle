@@ -11,7 +11,7 @@ struct trieNode *getNode(void) {
     newNode = (struct trieNode *)malloc(sizeof(struct trieNode));
 
     if (newNode) {
-        newNode->endOfWord = false;
+        newNode->endOfWord = 0;
 
         for (int i = 0; i < 26; i++) {
             newNode->children[i] = NULL;
@@ -34,19 +34,19 @@ void insert(struct trieNode *root, char *key){
         }
         currNode = currNode->children[index]; 
     }
-    currNode->endOfWord = true;
+    currNode->endOfWord = 1;
 }
 
 //This function searches the trie for a given word
 //It operates similarly to "insert" function above
-bool search(struct trieNode *root, char *key) {
+int search(struct trieNode *root, char *key) {
     int index;
 
     struct trieNode *currNode = root;
 
     for (int i = 0; i < strlen(key); i++) {
         index = key[i] - 97;
-        if (!currNode->children[index]) return false; //basically, if the letter is not used in the node, the word is not in the trie
+        if (!currNode->children[index]) return 0; //basically, if the letter is not used in the node, the word is not in the trie
         currNode = currNode->children[index];
     }
     return (currNode != NULL && currNode->endOfWord); //the word can only be in the trie if we have reached the bottom and the endOfWord flag is true
