@@ -69,6 +69,7 @@ int main(void) {
                 
                 strcpy(command, ""); //resets commands so that previous command may not be reused
                 printf("Player 2: <Type !pass to end turn>\n");
+                startTurn = time(0);
                 do {
                     scanf("%s", command);
                     if (search(root, command) == 1) {
