@@ -23,7 +23,7 @@ int main(void) {
     char command[50];
     command[0] = '\0';
     time_t startTurn, difference;
-    int duration = 180; //this sets the duration of a turn as 3 minutes (written in secs)
+    int duration = 20; //this sets the duration of a turn as 3 minutes (written in secs) 180
     char **board;
     int **discovered;
     char wordToAdd[20];
@@ -71,11 +71,15 @@ int main(void) {
                 }
 
                 // run DFS for every cell on the board to find all of the words
+                startTurn = time(0);
                 for (int i = 0; i < dimension; i++) {
                     for (int j = 0; j < dimension; j++) {
                         dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, i, j);
                         strncpy(wordToAdd, "", 1);
+                        difference = (time(0) - startTurn); //computes time elapsed during turn
+                        if (difference >= duration) break;
                     }
+                    if (difference >= duration) break;
                 }  
 
                 // free the dimension matrix
@@ -85,7 +89,7 @@ int main(void) {
                 free(discovered);            
                 
                 printf("Player 1: <Type !pass to end turn>\n");
-                startTurn = time(0);
+                
                 do {
                     scanf("%s", command);
                     // assign points for the word based on the rules of the game
@@ -96,8 +100,7 @@ int main(void) {
                         else if (strlen(command) == 7) p1points += 5;
                         else if (strlen(command) >= 8) p1points += 11;
                     }
-                    difference = (time(0) - startTurn); //computes time elapsed during turn
-                } while (strcmp(command, "!pass") && difference <= duration);
+                } while (strcmp(command, "!pass"));
                 
                 strcpy(command, ""); //resets commands so that previous command may not be reused
                 printf("Computer: \n");
@@ -171,7 +174,7 @@ int main(void) {
                 free(discovered);            
                 
                 printf("Player 1: <Type !pass to end turn>\n");
-                startTurn = time(0);
+                //startTurn = time(0);
                 do {
                     scanf("%s", command);
                     // assign points for the word based on the rules of the game
@@ -182,12 +185,12 @@ int main(void) {
                         else if (strlen(command) == 7) p1points += 5;
                         else if (strlen(command) >= 8) p1points += 11;
                     }
-                    difference = (time(0) - startTurn); //computes time elapsed during turn
-                } while (strcmp(command, "!pass") && difference <= duration);
+                    //difference = (time(0) - startTurn); //computes time elapsed during turn
+                } while (strcmp(command, "!pass"));
                 
                 strcpy(command, ""); //resets commands so that previous command may not be reused
                 printf("Player 2: <Type !pass to end turn>\n");
-                startTurn = time(0);
+                //startTurn = time(0);
                 do {
                     scanf("%s", command);
                     if (search(wordsInBoard, command) == 1) {
@@ -197,8 +200,8 @@ int main(void) {
                         else if (strlen(command) == 7) p2points += 5;
                         else if (strlen(command) >= 8) p2points += 11;
                     }
-                    difference = (time(0) - startTurn);
-                } while (strcmp(command, "!pass") && difference <= duration);
+                    //difference = (time(0) - startTurn);
+                } while (strcmp(command, "!pass"));
 
                 deleteTrie(wordsInBoard);
                 free_board(dimension, board);
