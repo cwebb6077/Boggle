@@ -4,17 +4,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 
 struct trieNode {
     struct trieNode *children[26];
-    bool endOfWord;
+    int endOfWord;
 };
 
 struct trieNode *getNode(void);
 void insert(struct trieNode *root, char *key);
-bool search(struct trieNode *root, char *key);
-bool isEmpty(struct trieNode* root);
+int search(struct trieNode *root, char *key);
+void displayTrie(struct trieNode *root, char str[], int level);
+int displayTrieWithScore(struct trieNode *root, char str[], int level);
 void deleteTrie(struct trieNode *currNode);
 
 #endif

@@ -19,6 +19,7 @@ These instructions will get you a copy of the project up and running on your loc
         - Type <code>sudo find / -name "words" -print</code>
         - And then, <code>grep -v "^[A-Z]" /path/to/file | grep -v "'" | grep -v "é" | grep -v "Å"  > dict.txt </code>
         - You should have now a working dictionary, and can move along to the next step. 
+    - **If you want to add your own dictionary file, it must be all lowercase and regular a-z Latin characters (lowercase is the most important!)** 
 
 1. Next, type <code>make</code>. This will compile the program.
 
