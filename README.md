@@ -4,7 +4,7 @@ This repository contains C code to implement Boggle.
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine in order to be able to play the game. See deployment section for notes on how to deploy the project on a live system.  
+You will need to get a copy of the project up and running on your local machine in order to be able to play the game. You can do this by either cloning the repo or downloading a .zip file. See Instructions section for notes on how to set up the project on a live system.  
 
 ## Instructions
 
@@ -24,6 +24,11 @@ These instructions will get you a copy of the project up and running on your loc
 1. Next, type <code>make</code>. This will compile the program.
 
 1. Finally, type <code>./boggle</code> to start the game. 
+
+## Video Tutorials
+
+- [Player vs. Computer Mode]()
+- [Player vs. Player]()
 
 ## Authors
 
