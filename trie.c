@@ -67,8 +67,7 @@ void displayTrie(struct trieNode *root, char str[], int level) {
     }
 }
 
-int displayTrieWithScore(struct trieNode *root, char str[], int level) {
-    int points = 0;
+int displayTrieWithScore(struct trieNode *root, char str[], int level, int points) {
     if (root->endOfWord == 1) {
         str[level] = '\0';
         if (strlen(str) == 3 || strlen(str) == 4) {
@@ -95,10 +94,11 @@ int displayTrieWithScore(struct trieNode *root, char str[], int level) {
     for (int i = 0; i < 26; i++) {
         if (root->children[i]) {
             str[level] = i + 97;
-            displayTrie(root->children[i], str, level + 1);
+            points = displayTrieWithScore(root->children[i], str, level + 1, points);
         }
     }
     return points;
+    //printf("%d", points);
 }
 
 //This function frees the memory of the trie when the main program is finished

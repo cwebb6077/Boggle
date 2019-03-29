@@ -6,42 +6,10 @@
 
 
 // NEED TO DO: Change str func's to strn func's
+//             Find better way to word search in 1v1 mode
 
 
-void dfs(char **board, struct trieNode *root, struct trieNode *wordsInBoard, int **discovered, char *wordToAdd, int dimension, int row, int col) {
-
-    discovered[row][col] = 1;
-    strncat(wordToAdd, &board[row][col], 1);
-    if (search(root, wordToAdd) == 1) {
-        insert(wordsInBoard, wordToAdd);
-    }
-    if (row - 1 >= 0 && col >= 0 && row - 1 < dimension && col < dimension && !discovered[row - 1][col]){ //cell directly north
-        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row - 1, col);
-    }
-    if (row - 1 >= 0 && col + 1 >= 0 && row - 1 < dimension && col + 1 < dimension && !discovered[row - 1][col + 1]){ //cell directly northeast
-        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row - 1, col + 1);
-    }
-    if (row >= 0 && col + 1 >= 0 && row < dimension && col + 1 < dimension && !discovered[row][col + 1]){ //cell directly east
-        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row, col + 1);
-    }
-    if (row + 1 >= 0 && col + 1 >= 0 && row + 1 < dimension && col + 1 < dimension && !discovered[row + 1][col + 1]){ //cell directly southeast
-        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row + 1, col + 1);
-    }
-    if (row + 1 >= 0 && col >= 0 && row + 1 < dimension && col < dimension && !discovered[row + 1][col]){ //cell directly south
-        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row + 1, col);
-    }
-    if (row + 1 >= 0 && col - 1 >= 0 && row + 1 < dimension && col - 1 < dimension && !discovered[row + 1][col - 1]){ //cell directly southwest
-        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row + 1, col - 1);
-    }
-    if (row >= 0 && col - 1 >= 0 && row < dimension && col - 1 < dimension && !discovered[row][col - 1]){ //cell directly west
-        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row, col - 1);
-    }
-    if (row - 1 >= 0 && col - 1 >= 0 && row - 1 < dimension && col - 1 < dimension && !discovered[row - 1][col - 1]){ //cell directly northwest
-        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row - 1, col - 1);
-    }
-    wordToAdd[strlen(wordToAdd) - 1] = '\0';
-    discovered[row][col] = 0;
-}
+void dfs(char **board, struct trieNode *root, struct trieNode *wordsInBoard, int **discovered, char *wordToAdd, int dimension, int row, int col);
 
 int main(void) {
 
@@ -55,7 +23,7 @@ int main(void) {
     char command[50];
     command[0] = '\0';
     time_t startTurn, difference;
-    int duration = 180; //this sets the duration of a turn as 3 minutes (written in secs)
+    int duration = 180; //this sets the duration of a turn as 3 minutes (written in secs) 180
     char **board;
     int **discovered;
     char wordToAdd[20];
@@ -78,8 +46,6 @@ int main(void) {
     scanf("%d", &numPlayers);
 
     printf("\n\n");
-    
-    // FIXME: Remember to change timing. Both players should play at the same time!
 
     strncpy(command, "", 1);
     switch(numPlayers) {
@@ -103,11 +69,15 @@ int main(void) {
                 }
 
                 // run DFS for every cell on the board to find all of the words
+                startTurn = time(0);
                 for (int i = 0; i < dimension; i++) {
                     for (int j = 0; j < dimension; j++) {
                         dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, i, j);
                         strncpy(wordToAdd, "", 1);
+                        difference = (time(0) - startTurn); //computes time elapsed during turn
+                        if (difference >= duration) break;
                     }
+                    if (difference >= duration) break;
                 }  
 
                 // free the dimension matrix
@@ -117,7 +87,7 @@ int main(void) {
                 free(discovered);            
                 
                 printf("Player 1: <Type !pass to end turn>\n");
-                startTurn = time(0);
+                
                 do {
                     scanf("%s", command);
                     // assign points for the word based on the rules of the game
@@ -128,14 +98,13 @@ int main(void) {
                         else if (strlen(command) == 7) p1points += 5;
                         else if (strlen(command) >= 8) p1points += 11;
                     }
-                    difference = (time(0) - startTurn); //computes time elapsed during turn
-                } while (strcmp(command, "!pass") && difference <= duration);
+                } while (strcmp(command, "!pass"));
                 
                 strcpy(command, ""); //resets commands so that previous command may not be reused
                 printf("Computer: \n");
 
                 char str[20];
-                p2points = displayTrieWithScore(wordsInBoard, str, 0);
+                p2points = displayTrieWithScore(wordsInBoard, str, 0, 0);
 
                 deleteTrie(wordsInBoard);
                 free_board(dimension, board);
@@ -172,6 +141,12 @@ int main(void) {
 
                 board = malloc(dimension * sizeof(char *));
                 create_board(dimension, board);
+
+
+                // There is a much better way to implement a search function on the board when a person inputs, write that
+
+
+
                 struct trieNode *wordsInBoard = getNode(); // creates trie for words on the board
 
                 // this creates a matrix to keep track of which cell has been discovered or not
@@ -187,14 +162,19 @@ int main(void) {
                 }
 
                 // run DFS for every cell on the board to find all of the words
+                startTurn = time(0);
                 for (int i = 0; i < dimension; i++) {
                     for (int j = 0; j < dimension; j++) {
                         dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, i, j);
                         strncpy(wordToAdd, "", 1);
                     }
-                }  
-                char str[20];
-                displayTrie(wordsInBoard, str, 0); 
+                }   
+                difference = (time(0) - startTurn); //computes time elapsed for searching
+                if (difference < duration) {
+                    while (difference < duration) {
+                        difference = (time(0) - startTurn);
+                    }
+                }
 
                 // free the dimension matrix
                 for (int i = 0; i < dimension; i++) {
@@ -203,7 +183,7 @@ int main(void) {
                 free(discovered);            
                 
                 printf("Player 1: <Type !pass to end turn>\n");
-                startTurn = time(0);
+                
                 do {
                     scanf("%s", command);
                     // assign points for the word based on the rules of the game
@@ -214,12 +194,12 @@ int main(void) {
                         else if (strlen(command) == 7) p1points += 5;
                         else if (strlen(command) >= 8) p1points += 11;
                     }
-                    difference = (time(0) - startTurn); //computes time elapsed during turn
-                } while (strcmp(command, "!pass") && difference <= duration);
+                    
+                } while (strcmp(command, "!pass"));
                 
                 strcpy(command, ""); //resets commands so that previous command may not be reused
                 printf("Player 2: <Type !pass to end turn>\n");
-                startTurn = time(0);
+                //startTurn = time(0);
                 do {
                     scanf("%s", command);
                     if (search(wordsInBoard, command) == 1) {
@@ -229,8 +209,8 @@ int main(void) {
                         else if (strlen(command) == 7) p2points += 5;
                         else if (strlen(command) >= 8) p2points += 11;
                     }
-                    difference = (time(0) - startTurn);
-                } while (strcmp(command, "!pass") && difference <= duration);
+                    //difference = (time(0) - startTurn);
+                } while (strcmp(command, "!pass"));
 
                 deleteTrie(wordsInBoard);
                 free_board(dimension, board);
@@ -267,3 +247,43 @@ int main(void) {
     return 0;
 }
 
+void dfs(char **board, struct trieNode *root, struct trieNode *wordsInBoard, int **discovered, char *wordToAdd, int dimension, int row, int col) {
+
+    discovered[row][col] = 1;
+   
+    strncat(wordToAdd, &board[row][col], 1);
+    if (search(root, wordToAdd) == 1) {
+        insert(wordsInBoard, wordToAdd);
+    }
+    if (strlen(wordToAdd) >= 10) {
+        wordToAdd[strlen(wordToAdd) - 1] = '\0';
+        discovered[row][col] = 0;
+        return;
+    }
+    if (row - 1 >= 0 && col >= 0 && row - 1 < dimension && col < dimension && !discovered[row - 1][col]){ //cell directly north
+        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row - 1, col);
+    }
+    if (row - 1 >= 0 && col + 1 >= 0 && row - 1 < dimension && col + 1 < dimension && !discovered[row - 1][col + 1]){ //cell directly northeast
+        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row - 1, col + 1);
+    }
+    if (row >= 0 && col + 1 >= 0 && row < dimension && col + 1 < dimension && !discovered[row][col + 1]){ //cell directly east
+        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row, col + 1);
+    }
+    if (row + 1 >= 0 && col + 1 >= 0 && row + 1 < dimension && col + 1 < dimension && !discovered[row + 1][col + 1]){ //cell directly southeast
+        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row + 1, col + 1);
+    }
+    if (row + 1 >= 0 && col >= 0 && row + 1 < dimension && col < dimension && !discovered[row + 1][col]){ //cell directly south
+        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row + 1, col);
+    }
+    if (row + 1 >= 0 && col - 1 >= 0 && row + 1 < dimension && col - 1 < dimension && !discovered[row + 1][col - 1]){ //cell directly southwest
+        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row + 1, col - 1);
+    }
+    if (row >= 0 && col - 1 >= 0 && row < dimension && col - 1 < dimension && !discovered[row][col - 1]){ //cell directly west
+        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row, col - 1);
+    }
+    if (row - 1 >= 0 && col - 1 >= 0 && row - 1 < dimension && col - 1 < dimension && !discovered[row - 1][col - 1]){ //cell directly northwest
+        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row - 1, col - 1);
+    }
+    wordToAdd[strlen(wordToAdd) - 1] = '\0';
+    discovered[row][col] = 0;
+}
