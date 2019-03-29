@@ -6,7 +6,7 @@
 
 
 // NEED TO DO: Change str func's to strn func's
-//             Change timing style
+//             Find better way to word search in 1v1 mode
 
 
 void dfs(char **board, struct trieNode *root, struct trieNode *wordsInBoard, int **discovered, char *wordToAdd, int dimension, int row, int col);
@@ -23,7 +23,7 @@ int main(void) {
     char command[50];
     command[0] = '\0';
     time_t startTurn, difference;
-    int duration = 20; //this sets the duration of a turn as 3 minutes (written in secs) 180
+    int duration = 180; //this sets the duration of a turn as 3 minutes (written in secs) 180
     char **board;
     int **discovered;
     char wordToAdd[20];
@@ -46,8 +46,6 @@ int main(void) {
     scanf("%d", &numPlayers);
 
     printf("\n\n");
-    
-    // FIXME: Remember to change timing. Both players should play at the same time!
 
     strncpy(command, "", 1);
     switch(numPlayers) {
@@ -143,6 +141,12 @@ int main(void) {
 
                 board = malloc(dimension * sizeof(char *));
                 create_board(dimension, board);
+
+
+                // There is a much better way to implement a search function on the board when a person inputs, write that
+
+
+
                 struct trieNode *wordsInBoard = getNode(); // creates trie for words on the board
 
                 // this creates a matrix to keep track of which cell has been discovered or not
@@ -158,14 +162,19 @@ int main(void) {
                 }
 
                 // run DFS for every cell on the board to find all of the words
+                startTurn = time(0);
                 for (int i = 0; i < dimension; i++) {
                     for (int j = 0; j < dimension; j++) {
                         dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, i, j);
                         strncpy(wordToAdd, "", 1);
                     }
-                }  
-                //char str[20];
-                //displayTrie(wordsInBoard, str, 0); 
+                }   
+                difference = (time(0) - startTurn); //computes time elapsed for searching
+                if (difference < duration) {
+                    while (difference < duration) {
+                        difference = (time(0) - startTurn);
+                    }
+                }
 
                 // free the dimension matrix
                 for (int i = 0; i < dimension; i++) {
@@ -174,7 +183,7 @@ int main(void) {
                 free(discovered);            
                 
                 printf("Player 1: <Type !pass to end turn>\n");
-                //startTurn = time(0);
+                
                 do {
                     scanf("%s", command);
                     // assign points for the word based on the rules of the game
@@ -185,7 +194,7 @@ int main(void) {
                         else if (strlen(command) == 7) p1points += 5;
                         else if (strlen(command) >= 8) p1points += 11;
                     }
-                    //difference = (time(0) - startTurn); //computes time elapsed during turn
+                    
                 } while (strcmp(command, "!pass"));
                 
                 strcpy(command, ""); //resets commands so that previous command may not be reused
