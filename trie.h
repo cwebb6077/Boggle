@@ -14,7 +14,7 @@ struct trieNode *getNode(void);
 void insert(struct trieNode *root, char *key);
 int search(struct trieNode *root, char *key);
 void displayTrie(struct trieNode *root, char str[], int level);
-int displayTrieWithScore(struct trieNode *root, char str[], int level);
+int displayTrieWithScore(struct trieNode *root, char str[], int level, int points);
 void deleteTrie(struct trieNode *currNode);
 
 #endif

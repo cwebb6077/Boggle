@@ -6,42 +6,10 @@
 
 
 // NEED TO DO: Change str func's to strn func's
+//             Change timing style
 
 
-void dfs(char **board, struct trieNode *root, struct trieNode *wordsInBoard, int **discovered, char *wordToAdd, int dimension, int row, int col) {
-
-    discovered[row][col] = 1;
-    strncat(wordToAdd, &board[row][col], 1);
-    if (search(root, wordToAdd) == 1) {
-        insert(wordsInBoard, wordToAdd);
-    }
-    if (row - 1 >= 0 && col >= 0 && row - 1 < dimension && col < dimension && !discovered[row - 1][col]){ //cell directly north
-        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row - 1, col);
-    }
-    if (row - 1 >= 0 && col + 1 >= 0 && row - 1 < dimension && col + 1 < dimension && !discovered[row - 1][col + 1]){ //cell directly northeast
-        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row - 1, col + 1);
-    }
-    if (row >= 0 && col + 1 >= 0 && row < dimension && col + 1 < dimension && !discovered[row][col + 1]){ //cell directly east
-        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row, col + 1);
-    }
-    if (row + 1 >= 0 && col + 1 >= 0 && row + 1 < dimension && col + 1 < dimension && !discovered[row + 1][col + 1]){ //cell directly southeast
-        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row + 1, col + 1);
-    }
-    if (row + 1 >= 0 && col >= 0 && row + 1 < dimension && col < dimension && !discovered[row + 1][col]){ //cell directly south
-        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row + 1, col);
-    }
-    if (row + 1 >= 0 && col - 1 >= 0 && row + 1 < dimension && col - 1 < dimension && !discovered[row + 1][col - 1]){ //cell directly southwest
-        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row + 1, col - 1);
-    }
-    if (row >= 0 && col - 1 >= 0 && row < dimension && col - 1 < dimension && !discovered[row][col - 1]){ //cell directly west
-        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row, col - 1);
-    }
-    if (row - 1 >= 0 && col - 1 >= 0 && row - 1 < dimension && col - 1 < dimension && !discovered[row - 1][col - 1]){ //cell directly northwest
-        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row - 1, col - 1);
-    }
-    wordToAdd[strlen(wordToAdd) - 1] = '\0';
-    discovered[row][col] = 0;
-}
+void dfs(char **board, struct trieNode *root, struct trieNode *wordsInBoard, int **discovered, char *wordToAdd, int dimension, int row, int col);
 
 int main(void) {
 
@@ -135,7 +103,7 @@ int main(void) {
                 printf("Computer: \n");
 
                 char str[20];
-                p2points = displayTrieWithScore(wordsInBoard, str, 0);
+                p2points = displayTrieWithScore(wordsInBoard, str, 0, 0);
 
                 deleteTrie(wordsInBoard);
                 free_board(dimension, board);
@@ -193,8 +161,8 @@ int main(void) {
                         strncpy(wordToAdd, "", 1);
                     }
                 }  
-                char str[20];
-                displayTrie(wordsInBoard, str, 0); 
+                //char str[20];
+                //displayTrie(wordsInBoard, str, 0); 
 
                 // free the dimension matrix
                 for (int i = 0; i < dimension; i++) {
@@ -267,3 +235,43 @@ int main(void) {
     return 0;
 }
 
+void dfs(char **board, struct trieNode *root, struct trieNode *wordsInBoard, int **discovered, char *wordToAdd, int dimension, int row, int col) {
+
+    discovered[row][col] = 1;
+   
+    strncat(wordToAdd, &board[row][col], 1);
+    if (search(root, wordToAdd) == 1) {
+        insert(wordsInBoard, wordToAdd);
+    }
+    if (strlen(wordToAdd) >= 10) {
+        wordToAdd[strlen(wordToAdd) - 1] = '\0';
+        discovered[row][col] = 0;
+        return;
+    }
+    if (row - 1 >= 0 && col >= 0 && row - 1 < dimension && col < dimension && !discovered[row - 1][col]){ //cell directly north
+        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row - 1, col);
+    }
+    if (row - 1 >= 0 && col + 1 >= 0 && row - 1 < dimension && col + 1 < dimension && !discovered[row - 1][col + 1]){ //cell directly northeast
+        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row - 1, col + 1);
+    }
+    if (row >= 0 && col + 1 >= 0 && row < dimension && col + 1 < dimension && !discovered[row][col + 1]){ //cell directly east
+        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row, col + 1);
+    }
+    if (row + 1 >= 0 && col + 1 >= 0 && row + 1 < dimension && col + 1 < dimension && !discovered[row + 1][col + 1]){ //cell directly southeast
+        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row + 1, col + 1);
+    }
+    if (row + 1 >= 0 && col >= 0 && row + 1 < dimension && col < dimension && !discovered[row + 1][col]){ //cell directly south
+        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row + 1, col);
+    }
+    if (row + 1 >= 0 && col - 1 >= 0 && row + 1 < dimension && col - 1 < dimension && !discovered[row + 1][col - 1]){ //cell directly southwest
+        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row + 1, col - 1);
+    }
+    if (row >= 0 && col - 1 >= 0 && row < dimension && col - 1 < dimension && !discovered[row][col - 1]){ //cell directly west
+        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row, col - 1);
+    }
+    if (row - 1 >= 0 && col - 1 >= 0 && row - 1 < dimension && col - 1 < dimension && !discovered[row - 1][col - 1]){ //cell directly northwest
+        dfs(board, root, wordsInBoard, discovered, wordToAdd, dimension, row - 1, col - 1);
+    }
+    wordToAdd[strlen(wordToAdd) - 1] = '\0';
+    discovered[row][col] = 0;
+}
