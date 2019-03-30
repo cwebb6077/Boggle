@@ -3,7 +3,8 @@
 /* The general idea for implementing the trie data structure comes from https://www.geeksforgeeks.org/trie-insert-and-search/
 The reason for using a trie is to improve the look-up time of words as compared to other data structures like hashmaps.
 The look-up time with a trie is O(length of longest word) and most of the time is spent building the trie, not searching.
-The only downfall is memory usage and a very large stack frame involved in creating a trie with such a large dataset. */
+The only downfall is memory usage and a very large stack frame involved in creating a trie with such a large dataset.
+The large stack frame causes stack overflow in valgrind, so a special script for valgrind had to be made. */
 
 //This function allocates memory for each node and initializes all values to NULL/false
 struct trieNode *getNode(void) {
@@ -52,6 +53,7 @@ int search(struct trieNode *root, char *key) {
     return (currNode != NULL && currNode->endOfWord); //the word can only be in the trie if we have reached the bottom and the endOfWord flag is true
 }
 
+// This function displays the entire trie in alphabetical order
 void displayTrie(struct trieNode *root, char str[], int level) {
     if (root->endOfWord == 1) {
         str[level] = '\0';
@@ -67,6 +69,7 @@ void displayTrie(struct trieNode *root, char str[], int level) {
     }
 }
 
+// This function also displays the entire trie in order, but also computes a score for each word and returns it
 int displayTrieWithScore(struct trieNode *root, char str[], int level, int points) {
     if (root->endOfWord == 1) {
         str[level] = '\0';
@@ -98,10 +101,9 @@ int displayTrieWithScore(struct trieNode *root, char str[], int level, int point
         }
     }
     return points;
-    //printf("%d", points);
 }
 
-//This function frees the memory of the trie when the main program is finished
+//This function frees the memory of the trie when its use is finished
 //The operation is fairly straightforward, for each edge connected to the root, recursively free the subtries
 void deleteTrie(struct trieNode *currNode) {
     for (int i = 0; i < 26; i++) {

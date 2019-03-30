@@ -1,5 +1,7 @@
 #include "board.h"
 
+// This file contains the function for creating the game board and also freeing it from memory
+
 void create_board(int dimension, char** board) {
 
     // initializes the seed for random number generator
