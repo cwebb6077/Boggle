@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ncurses.h>
 #include "board.h"
 #include "trie.h"
 
@@ -29,7 +30,7 @@ int main(void) {
     char command[50];
     command[0] = '\0';
     time_t startTurn, difference;
-    int duration = 180; //this sets the duration of a turn as 3 minutes (written in secs) 180
+    int duration = 20; //this sets the duration of a turn as 3 minutes (written in secs) 180
     char **board;
     int **discovered;
     char wordToAdd[20];
@@ -43,13 +44,28 @@ int main(void) {
     }
     fclose(wordFile);
 
-    printf("\n\n\n***** Boggle *****\n\n\n");
+    initscr();
+    cbreak();
+    noecho();
+    printw("\n\n\n***** Boggle *****\n\n\n");
     
 
-    printf("\nPossible Game Modes:\n<1> Player vs. Computer\n<2> Player vs. Player\n");
-    printf("Select Number of Players: ");
-    scanf("%d", &numPlayers);
 
+
+
+
+
+
+
+
+    printw("\nPossible Game Modes:\n<1> Player vs. Computer\n<2> Player vs. Player\n");
+    refresh();
+    printw("Select Number of Players: ");
+    refresh();
+    getch();
+    endwin();
+    //scanf("%d", &numPlayers);
+    
     printf("\n\n");
 
     strncpy(command, "", 1);
@@ -272,10 +288,14 @@ int main(void) {
             }
             printf("\nFinal Score: %d - %d - %d\n\n", numWins, numTies, numLoss);
             break;
+        default:
+            printf("Entered wrong choice\n");
+            break;
     }
     deleteTrie(root);
-
+    //endwin();
     return 0;
+
 }
 
 // The following is an algorithm to search the board based on Depth First Search
