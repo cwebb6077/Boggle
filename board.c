@@ -45,7 +45,7 @@ void create_board(int dimension, char** board) {
             else if (temp < 812) board[i][j] = 'a';
             else if (temp < 910) board[i][j] = 't';
             else if (temp < 1202) board[i][j] = 'e';
-            printf("%c ", board[i][j]);
+            printf("%c ", board[i][j]); // prints the board to terminal
         }
         printf("\n\n");
     } 

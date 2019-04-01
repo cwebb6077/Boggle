@@ -11,7 +11,7 @@ You will need to get a copy of the project up and running on your local machine 
 
 - Important Notes:
     - This was tested with <code>$TERM=xterm-256color</code>. 
-    - Other <code>$TERM</code> variables may yield ncurses outputs that are unexpected and not ideal, so proceed at own risk.
+    - Other <code>$TERM</code> variables may yield ncurses outputs that are unexpected and not ideal, .
 
 ## Instructions
 
@@ -34,8 +34,17 @@ You will need to get a copy of the project up and running on your local machine 
 
 ## Video Tutorials
 
-- [Player vs. Computer Mode]()
-- [Player vs. Player]()
+- [Player vs. Computer Mode](https://youtu.be/iYEB_Gqcd38)
+- [Player vs. Player](https://youtu.be/uOBq_4Fcnww)
+
+## Room For Improvement
+
+- The ncurses interface has issues whenever printing the board or the words found by the computer.
+    - This is caused by scrolling issues, which can be fixed with an ncurses pad, but would require major revisions in the program's printing scheme.
+
+## Further Notes of Interest
+
+- When testing with valgrind, there a "still-reachable" memory errors. This is normal and comes from ncurses, which does not free screen memory conventionally
 
 ## Authors
 

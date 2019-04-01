@@ -4,7 +4,8 @@
 The reason for using a trie is to improve the look-up time of words as compared to other data structures like hashmaps.
 The look-up time with a trie is O(length of longest word) and most of the time is spent building the trie, not searching.
 The only downfall is memory usage and a very large stack frame involved in creating a trie with such a large dataset.
-The large stack frame causes stack overflow in valgrind, so a special script for valgrind had to be made. */
+The large stack frame causes stack overflow in valgrind, so a special script for valgrind had to be made. 
+These issues can be reduces with different strategies like hashing instead of allocating 26 edges per node, or saving common suffixes.*/
 
 //This function allocates memory for each node and initializes all values to NULL/false
 struct trieNode *getNode(void) {

@@ -9,12 +9,9 @@
    This program implements the game of Boggle. The game can either be played against the computer or against a human opponent.
    A dictionary is loaded into a trie data structure for quick access. 
    The computer uses Depth First Searches to find all the words on the board.
+   The UI for this program is ncurses.
    The user is given 3 minutes to look for words, and then must type them in one at a time.
 */
-
-// NEED TO DO: Change str func's to strn func's
-//             Test for bugs
-//             Make curses interface
 
 void dfs(char **board, struct trieNode *root, struct trieNode *temp, struct trieNode *wordsInBoard, int **discovered, char *wordToAdd, int dimension, int i, int j);
 
@@ -29,7 +26,7 @@ int main(void) {
     char command[50];
     command[0] = '\0';
     time_t startTurn, difference;
-    int duration = 20; //this sets the duration of a turn as 3 minutes (written in secs) 180
+    int duration = 180; //this sets the duration of a turn as 3 minutes (written in secs) 180
     char **board;
     int **discovered;
     char wordToAdd[20];
@@ -50,23 +47,18 @@ int main(void) {
     printw("************** Boggle **************\n");
     printw("Possible Game Modes");
 
-    int yMax, xMax;
-    getmaxyx(stdscr, yMax, xMax);
-
-    WINDOW *menu = newwin(6, xMax - 12, 3, 6);
+    // This makes the start menu for the game modes using ncurses functions
+    WINDOW *menu = newwin(6, 22, 3, 6);
     refresh();
     wrefresh(menu);
-
     keypad(menu, true);
-
     char choices[2][20] = {"Player vs. Computer", "Player vs. Player"};
     int choice;
     int highlight = 0;
-
     while(1) {
         for (int i = 0; i < 2; i++) {
             if (i == highlight) {
-                wattron(menu, A_REVERSE);
+                wattron(menu, A_REVERSE);// highlight the area
 
             }
             mvwprintw(menu, i + 1, 1, choices[i]);
@@ -77,11 +69,11 @@ int main(void) {
         switch(choice) {
             case KEY_UP:
                 highlight--;
-                if (highlight == -1) highlight = 0;
+                if (highlight == -1) highlight = 0; // do not go off menu 
                 break;
             case KEY_DOWN:
                 highlight++;
-                if (highlight == 2) highlight = 1;
+                if (highlight == 2) highlight = 1; // do not go off menu
                 break;
             default:
                 break;
@@ -104,8 +96,7 @@ int main(void) {
     printw("   - 5 points for words of length 7\n");
     printw("   - 11 points for words of length 8 or more\n");
     printw("\n\n\nPress any key to continue");
-    getch();
-    
+    getch(); // this waits for any key to be pressed
 
     strncpy(command, "", 1);
 
@@ -115,7 +106,9 @@ int main(void) {
         printw("Dimension of board: <Entered as <N> for an N x N board>\n");
         refresh();
         scanw("%d", &dimension);
-        
+
+        // warnings for board sizes if too large or two small
+        // sets up menus for dealing with these
         if (dimension > 85 || dimension < 4) {
             clear();
             if (dimension > 85) {
@@ -133,7 +126,7 @@ int main(void) {
                 attroff(COLOR_PAIR(1));
             }
             printw("Do you wish to continue?\n");
-            WINDOW *helpmenu = newwin(6, xMax - 12, 3, 6);
+            WINDOW *helpmenu = newwin(6, 12, 3, 6);
             refresh();
             wrefresh(helpmenu);
 
@@ -178,6 +171,7 @@ int main(void) {
         endwin();
         board = malloc(dimension * sizeof(char *));
         create_board(dimension, board);
+        printf("\n\n\n\n\n");
         struct trieNode *wordsInBoard = getNode(); // creates trie for words on the board
 
         // this creates a matrix to keep track of which cell has been discovered or not
@@ -217,7 +211,7 @@ int main(void) {
         clear();
 
         switch(highlight) {
-            case 0:
+            case 0: // player vs. computer mode
                 printw("Player 1: <Type !pass to end turn>\n");
                 refresh();
                 do {
@@ -242,7 +236,7 @@ int main(void) {
                 p2points = displayTrieWithScore(wordsInBoard, str, 0, 0); // display the words found by the computer and compute score for each
                 printw("Press any key to continue.");
                 refresh();
-                getch();
+                getch(); 
 
                 // free some memory
                 deleteTrie(wordsInBoard);
@@ -271,7 +265,7 @@ int main(void) {
                 
             break;
 
-        case 1:
+        case 1: // player vs. player mode
            printw("Player 1: <Type !pass to end turn>\n");
            refresh();
             do {
@@ -334,7 +328,7 @@ int main(void) {
 
         // make a new menu for choosing to quit the game or continue
         printw("New Game?\n");
-        WINDOW *endmenu = newwin(6, xMax - 12, 10, 6);
+        WINDOW *endmenu = newwin(6, 12, 10, 6);
         refresh();
         wrefresh(endmenu);
         keypad(endmenu, true);
@@ -366,11 +360,12 @@ int main(void) {
             if (endChoice == 10) break;
         }
         if (endHighlight == 1) break;
+        printf("\n\n\n\n\n");
     }
     endwin();
     printf("\nFinal Score: %d - %d - %d\n\n", numWins, numTies, numLoss); // print the final score and exit
 
-    deleteTrie(root);
+    deleteTrie(root); // free dictionary trie from memory
     return 0;
 
 }
@@ -393,7 +388,7 @@ void dfs(char **board, struct trieNode *root, struct trieNode *temp, struct trie
     }
 
     // first, we need to check to see if the new letter is actually one that would lead to a new word 
-    // (e.g. if word = "trus", then newletter = 's' is okay, but newletter = 'x' is not)
+    // (e.g. if word = "trus", then nextletter = 't' is okay, but nextletter = 'x' is not)
     // this allows for the number of DFS searches to be greatly decreased (and therefore runtime decreased)
     // without this check, the runtime performance of an 11x11 board is >30 minutes because it checks every possible permutation of DFS
     // with it, the runtime reduces to a mere seconds
