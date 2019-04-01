@@ -10,7 +10,8 @@ You will need to get a copy of the project up and running on your local machine 
     - To do this, type <code>sudo apt-get install libncurses5-dev libncursesw5-dev</code> to download. After this, you may proceed to Instructions.
 
 - Important Notes:
-    - This was tested with <code>$TERM=xterm-256color</code>. 
+    - This was tested with <code>$TERM=xterm-256color</code>.
+    - You can change this by typing <code> export TERM=xterm-256color</code>.
     - Other <code>$TERM</code> variables may yield ncurses outputs that are unexpected and not ideal, .
 
 ## Instructions
