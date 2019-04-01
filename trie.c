@@ -4,7 +4,8 @@
 The reason for using a trie is to improve the look-up time of words as compared to other data structures like hashmaps.
 The look-up time with a trie is O(length of longest word) and most of the time is spent building the trie, not searching.
 The only downfall is memory usage and a very large stack frame involved in creating a trie with such a large dataset.
-The large stack frame causes stack overflow in valgrind, so a special script for valgrind had to be made. */
+The large stack frame causes stack overflow in valgrind, so a special script for valgrind had to be made. 
+These issues can be reduces with different strategies like hashing instead of allocating 26 edges per node, or saving common suffixes.*/
 
 //This function allocates memory for each node and initializes all values to NULL/false
 struct trieNode *getNode(void) {
@@ -53,44 +54,28 @@ int search(struct trieNode *root, char *key) {
     return (currNode != NULL && currNode->endOfWord); //the word can only be in the trie if we have reached the bottom and the endOfWord flag is true
 }
 
-// This function displays the entire trie in alphabetical order
-void displayTrie(struct trieNode *root, char str[], int level) {
-    if (root->endOfWord == 1) {
-        str[level] = '\0';
-        if (strlen(str) >= 3) {
-            printf("%s\n", str);
-        }
-    }
-    for (int i = 0; i < 26; i++) {
-        if (root->children[i]) {
-            str[level] = i + 97;
-            displayTrie(root->children[i], str, level + 1);
-        }
-    }
-}
-
 // This function also displays the entire trie in order, but also computes a score for each word and returns it
 int displayTrieWithScore(struct trieNode *root, char str[], int level, int points) {
     if (root->endOfWord == 1) {
         str[level] = '\0';
         if (strlen(str) == 3 || strlen(str) == 4) {
-            printf("%s\n", str);
+            printw("%s\n", str);
             points++;
         } 
         else if (strlen(str) == 5){
-            printf("%s\n", str);
+            printw("%s\n", str);
             points += 2;
         }
         else if (strlen(str) == 6) {
-            printf("%s\n", str);
+            printw("%s\n", str);
             points += 3;
         } 
         else if (strlen(str) == 7) {
-            printf("%s\n", str);
+            printw("%s\n", str);
             points += 5;
         } 
         else if (strlen(str) >= 8) {
-            printf("%s\n", str);
+            printw("%s\n", str);
             points += 11;
         } 
     }

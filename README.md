@@ -6,6 +6,13 @@ This repository contains C code to implement Boggle.
 
 You will need to get a copy of the project up and running on your local machine in order to be able to play the game. You can do this by either cloning the repo or downloading a .zip file. See Instructions section for notes on how to set up the project on a live system.  
 
+**You will need the ncurses.h file to run this program**
+    - To do this, type <code>sudo apt-get install libncurses5-dev libncursesw5-dev</code> to download. After this, you may proceed to Instructions.
+
+- Important Notes:
+    - This was tested with <code>$TERM=xterm-256color</code>. 
+    - Other <code>$TERM</code> variables may yield ncurses outputs that are unexpected and not ideal, .
+
 ## Instructions
 
 1. In your terminal, type the command <code>make textfile</code>.
@@ -27,8 +34,17 @@ You will need to get a copy of the project up and running on your local machine 
 
 ## Video Tutorials
 
-- [Player vs. Computer Mode]()
-- [Player vs. Player]()
+- [Player vs. Computer Mode](https://youtu.be/iYEB_Gqcd38)
+- [Player vs. Player](https://youtu.be/uOBq_4Fcnww)
+
+## Room For Improvement
+
+- The ncurses interface has issues whenever printing the board or the words found by the computer.
+    - This is caused by scrolling issues, which can be fixed with an ncurses pad, but would require major revisions in the program's printing scheme.
+
+## Further Notes of Interest
+
+- When testing with valgrind, there a "still-reachable" memory errors. This is normal and comes from ncurses, which does not free screen memory conventionally
 
 ## Authors
 
